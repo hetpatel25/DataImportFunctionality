@@ -2,11 +2,11 @@ import express from 'express';
 import axios from 'axios';
 import Company from './Model/companyModel.js'
 
- 
+
 const router = express.Router();
 
 
-// POST route to upload multiple company data
+// POST route to upload data
 router.post('/upload', async (req, res) => {
     const companyDataArray = req.body; // Expecting an array of company objects
     console.log(req.body);
@@ -36,27 +36,6 @@ router.post('/upload', async (req, res) => {
         res.status(500).json({ error: 'Error uploading company data' });
     }
 });
-
-// router.get('/nearby', async (req, res) => {
-//     const { location, radius, type } = req.query;
-
-//     try {
-//         const response = await axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json`, {
-//             params: {
-//                 location,
-//                 radius,
-//                 type,
-//                 key: GOOGLE_PLACES_API_KEY,
-//             },
-//         });
-
-//         res.json(response.data);
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: 'Error fetching nearby places' });
-//     }
-// });
-
 
 
 

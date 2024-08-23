@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import * as XLSX from "xlsx";
 
 
-function Home({onFileUpload}) {
+function Home({ onFileUpload }) {
     const [file, setFile] = useState(null);
     const [data, setData] = useState(null);
 
 
-    
+
 
     const handleFileChange = (e) => {
         setFile(e.target.files[0]);
@@ -16,20 +16,20 @@ function Home({onFileUpload}) {
     const handleUpload = () => {
         if (file) {
             const reader = new FileReader();
-    
+
             reader.onload = (event) => {
                 const arrayBuffer = event.target.result;
                 const workbook = XLSX.read(arrayBuffer, { type: "array" });
                 const sheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[sheetName];
-    
+
                 // Convert the worksheet to JSON
                 const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-    
+
                 // Convert to array of objects with header keys
                 const headers = jsonData[0];
                 const dataRows = jsonData.slice(1);
-    
+
                 const formattedData = dataRows.map(row => {
                     let dataObject = {};
                     headers.forEach((header, index) => {
@@ -37,16 +37,14 @@ function Home({onFileUpload}) {
                     });
                     return dataObject;
                 });
-    
-                // Validate and process the data here
-                // const validatedData = validateData(formattedData);
+
                 setData(formattedData);
                 //console.log(formattedData);
                 onFileUpload(formattedData);
 
-    
+
             };
-    
+
             reader.readAsArrayBuffer(file);
         } else {
             alert("Please select a file first!");

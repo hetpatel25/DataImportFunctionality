@@ -5,11 +5,6 @@ import routes from "./Routes.js";
 
 import cors from 'cors';
 
-app.use(cors({
-    origin: 'http://localhost:3000', // Frontend origin
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type'],
-}));
 
 
 config();
@@ -18,6 +13,13 @@ connectDB();
 
 
 const app = express();
+
+app.use(cors({
+    origin: 'http://localhost:3000', 
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type'],
+}));
+
 app.use(express.json());
 
 const PORT = process.env.PORT || 9000;
