@@ -2,33 +2,12 @@ import React, { useState } from "react";
 import * as XLSX from "xlsx";
 
 
-function Home({ onFileUpload }) {
+function Home({onFileUpload}) {
     const [file, setFile] = useState(null);
     const [data, setData] = useState(null);
 
-    const API_URL = 'http://localhost:9000/api/upload'
 
-    async function postCompanyData(companyDataArray) {
-        try {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(companyDataArray),
-            });
-
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-
-            const result = await response.json();
-            return result;
-        } catch (error) {
-            console.error('Error posting company data:', error);
-            throw error; // You can also handle this in your component or UI
-        }
-    }
+    
 
     const handleFileChange = (e) => {
         setFile(e.target.files[0]);
@@ -37,36 +16,54 @@ function Home({ onFileUpload }) {
     const handleUpload = () => {
         if (file) {
             const reader = new FileReader();
+    
             reader.onload = (event) => {
-                const binaryStr = event.target.result;
-                const workbook = XLSX.read(binaryStr, { type: "binary" });
+                const arrayBuffer = event.target.result;
+                const workbook = XLSX.read(arrayBuffer, { type: "array" });
                 const sheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[sheetName];
-                const jsonData = XLSX.utils.sheet_to_json(worksheet);
-
+    
+                // Convert the worksheet to JSON
+                const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+    
+                // Convert to array of objects with header keys
+                const headers = jsonData[0];
+                const dataRows = jsonData.slice(1);
+    
+                const formattedData = dataRows.map(row => {
+                    let dataObject = {};
+                    headers.forEach((header, index) => {
+                        dataObject[header] = row[index];
+                    });
+                    return dataObject;
+                });
+    
                 // Validate and process the data here
-                const validatedData = validateData(jsonData);
-                setData(validatedData);
+                // const validatedData = validateData(formattedData);
+                setData(formattedData);
+                //console.log(formattedData);
+                onFileUpload(formattedData);
 
-                onFileUpload(validatedData); // Send the validated data to the backend
+    
             };
-            reader.readAsBinaryString(file);
+    
+            reader.readAsArrayBuffer(file);
         } else {
             alert("Please select a file first!");
         }
     };
 
-    const validateData = (data) => {
-        // Example validation: Ensure required fields are present and correct types
-        return data.map(row => {
-            return {
-                companyName: typeof row["Company Name"] === 'string' ? row["Company Name"] : null,
-                contactName: typeof row["Contact Name"] === 'string' ? row["Contact Name"] : null,
-                phone: typeof row["Phone"] === 'number' ? row["Phone"] : null,
-                email: typeof row["Email"] === 'string' ? row["Email"] : null,
-            };
-        }).filter(row => row.companyName && row.contactName && row.phone && row.email);
-    };
+    // const validateData = (data) => {
+    //     // Example validation: Ensure required fields are present and correct types
+    //     return data.map(row => {
+    //         return {
+    //             companyName: typeof row["Company Name"] === 'string' ? row["Company Name"] : null,
+    //             contactName: typeof row["Contact Name"] === 'string' ? row["Contact Name"] : null,
+    //             phone: typeof row["Phone"] === 'number' ? row["Phone"] : null,
+    //             email: typeof row["Email"] === 'string' ? row["Email"] : null,
+    //         };
+    //     }).filter(row => row.companyName && row.contactName && row.phone && row.email);
+    // };
 
     return (
 

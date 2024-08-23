@@ -1,13 +1,15 @@
 import express from 'express';
 import axios from 'axios';
+import Company from './Model/companyModel.js'
 
-
+ 
 const router = express.Router();
 
 
 // POST route to upload multiple company data
 router.post('/upload', async (req, res) => {
     const companyDataArray = req.body; // Expecting an array of company objects
+    console.log(req.body);
 
     try {
         // Validate that the data is an array

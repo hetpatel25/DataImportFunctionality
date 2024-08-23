@@ -3,6 +3,14 @@ import connectDB from "./db.js";
 import { config } from 'dotenv';
 import routes from "./Routes.js";
 
+import cors from 'cors';
+
+app.use(cors({
+    origin: 'http://localhost:3000', // Frontend origin
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type'],
+}));
+
 
 config();
 
