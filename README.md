@@ -60,7 +60,7 @@ The backend is built with Node.js and Express and is located in the `backend` di
     cd backend
     ```
 
-2. **Create a `.env` file in the `backend` directory and add your MongoDB connection URI:**
+2. **[If .env file is not avilable] Create a `.env` file in the `backend` directory and add your MongoDB connection URI:**
 
     ```env
     MONGO_URI=mongodb+srv://hetpatel3245:het%40123@cluster0.qqi5r.mongodb.net/mydatabase?retryWrites=true&w=majority
